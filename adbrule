@@ -1,0 +1,107 @@
+; ==========================================================
+; 完整模版：优化版（优先级：广告拦截 > Adobe > 直连 > 代理 > 兜底）
+; ==========================================================
+enable_rule_generator=true
+overwrite_original_rules=true
+
+; 节点清洗
+exclude=流量|套餐|到期|剩余|重置|官网|网站|最新网址|防失联|失联|官网地址|公告|通知|TG|Telegram|电报|群|频道|说明|使用说明|QQ群|客服|工单|订阅|Expire|Traffic|Reset|Remaining|Expire|Official|Website
+
+; ==========================================================
+; 1) 规则部分
+; ==========================================================
+; 广告拦截（最高优先级）
+ruleset=🚫 广告拦截,[]GEOSITE,category-ads-all
+ruleset=🚫 广告拦截,[]GEOIP,category-ads-all,no-resolve
+
+; 屏蔽 Adobe 联网
+ruleset=🟥 Adobe,[]GEOSITE,adobe
+ruleset=🟥 Adobe,[]GEOIP,adobe,no-resolve
+
+; 私网与直连补丁
+ruleset=DIRECT,[]GEOSITE,private
+ruleset=DIRECT,[]GEOIP,private,no-resolve
+ruleset=DIRECT,clash-domain:https://testingcf.jsdelivr.net/gh/Aethersailor/Custom_OpenClash_Rules@main/rule/Custom_Direct_Domain.yaml,28800
+ruleset=DIRECT,clash-classic:https://testingcf.jsdelivr.net/gh/Aethersailor/Custom_OpenClash_Rules@main/rule/Custom_Direct_Classical_IP.yaml,28800
+
+; 代理补丁（兜底）
+ruleset=🚀 手动选择,clash-domain:https://testingcf.jsdelivr.net/gh/Aethersailor/Custom_OpenClash_Rules@main/rule/Custom_Proxy_Domain.yaml,28800
+ruleset=🚀 手动选择,clash-classic:https://testingcf.jsdelivr.net/gh/Aethersailor/Custom_OpenClash_Rules@main/rule/Custom_Proxy_Classical_IP.yaml,28800
+
+; 国内直连
+ruleset=DIRECT,[]GEOSITE,cn
+ruleset=DIRECT,[]GEOIP,cn,no-resolve
+ruleset=DIRECT,[]GEOSITE,google-cn,category-games@cn,category-game-platforms-download,category-public-tracker
+
+; 应用分流
+ruleset=📦 Notion,[]GEOSITE,Notion
+ruleset=📨 Telegram,[]GEOSITE,telegram
+ruleset=🤖 ChatGPT,[]GEOSITE,openai
+ruleset=🧠 AI,[]GEOSITE,category-ai-!cn
+ruleset=🍎 Apple,[]GEOSITE,apple
+ruleset=🎬 YouTube,[]GEOSITE,youtube
+ruleset=🎥 Netflix,[]GEOSITE,netflix
+ruleset=🎵 TikTok,[]GEOSITE,tiktok
+ruleset=📸 Instagram,[]GEOSITE,instagram
+ruleset=🐦 X,[]GEOSITE,twitter
+ruleset=🛠 GitHub,[]GEOSITE,github
+ruleset=🚝 测速工具,[]GEOSITE,category-speedtest
+ruleset=🎮 Steam,[]GEOSITE,steam
+
+; 交易所 & 开发工具
+ruleset=🟦 OKX,[]GEOSITE,okx
+ruleset=🟨 Binance,[]GEOSITE,binance
+ruleset=🟪 Bybit,[]GEOSITE,bybit
+ruleset=☁️ cloudflare,[]GEOSITE,cloudflare
+ruleset=🔎 Google,[]GEOSITE,google
+ruleset=🪟 Microsoft,[]GEOSITE,microsoft
+
+; 兜底规则
+ruleset=🚀 手动选择,[]GEOSITE,gfw
+ruleset=🔀 非标端口,clash-classic:https://testingcf.jsdelivr.net/gh/Aethersailor/Custom_OpenClash_Rules@main/rule/Custom_Port_Direct.yaml,28800
+ruleset=🐟 漏网之鱼,[]FINAL
+
+; ==========================================================
+; 2) 应用分流策略组
+; ==========================================================
+custom_proxy_group=🚫 广告拦截`select`[]REJECT[]DIRECT[]GLOBAL
+custom_proxy_group=🟥 Adobe`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]DIRECT`[]REJECT`[]🌐 Default
+custom_proxy_group=📦 Notion`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]DIRECT`[]🌐 Default
+custom_proxy_group=🤖 ChatGPT`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]🌐 Default
+custom_proxy_group=🧠 AI`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]🌐 Default
+custom_proxy_group=📨 Telegram`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]🌐 Default
+custom_proxy_group=🎬 YouTube`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]🌐 Default
+custom_proxy_group=🎥 Netflix`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]🌐 Default
+custom_proxy_group=🎵 TikTok`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]🌐 Default
+custom_proxy_group=📸 Instagram`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]🌐 Default
+custom_proxy_group=🐦 X`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]🌐 Default
+custom_proxy_group=🛠 GitHub`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]🌐 Default
+custom_proxy_group=🚝 测速工具`select`[]DIRECT[]🧭 手动选择[]🇭🇰 HK[]🇹🇼 TW[]🇯🇵 JP[]🇸🇬 SG[]🇺🇸 US[]🧊 冷门节点[]🌐 Default
+custom_proxy_group=🎮 Steam`select`[]DIRECT[]🇭🇰 HK[]🇹🇼 TW[]🇯🇵 JP[]🇸🇬 SG[]🇺🇸 US[]🧊 冷门节点[]🌐 Default
+custom_proxy_group=🟦 OKX`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]DIRECT`[]🌐 Default
+custom_proxy_group=🟨 Binance`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]DIRECT`[]🌐 Default
+custom_proxy_group=🟪 Bybit`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]DIRECT`[]🌐 Default
+custom_proxy_group=🔎 Google`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]🌐 Default
+custom_proxy_group=☁️ cloudflare`select`[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]🌐 Default
+custom_proxy_group=🪟 Microsoft`select`[]DIRECT[]🇭🇰 HK`[]🇹🇼 TW`[]🇯🇵 JP`[]🇸🇬 SG`[]🇺🇸 US`[]🧊 冷门节点`[]🌐 Default
+
+; ==========================================================
+; 3) 兜底与节点逻辑
+; ==========================================================
+custom_proxy_group=🚀 手动选择`select`[]♻️ 自动选择[]🇭🇰 HK[]🇹🇼 TW[]🇯🇵 JP[]🇸🇬 SG[]🇺🇸 US[]🧊 冷门节点[]🧭 手动选择[]DIRECT
+custom_proxy_group=🌐 Default`select`[]🇭🇰 HK[]🇹🇼 TW[]🇯🇵 JP[]🇸🇬 SG[]🇺🇸 US[]🧊 冷门节点[]♻️ 自动选择[]🧭 手动选择[]DIRECT
+custom_proxy_group=🐟 漏网之鱼`select`[]🌐 Default[]DIRECT[]♻️ 自动选择[]🧊 冷门节点[]🧭 手动选择[]🚀 手动选择
+custom_proxy_group=🔀 非标端口`select`[]🐟 遵循规则[]DIRECT
+custom_proxy_group=🐟 遵循规则`select`[]🐟 漏网之鱼
+
+; ==========================================================
+; 4) 测速与节点池
+; ==========================================================
+custom_proxy_group=🧭 手动选择`select`.*
+custom_proxy_group=♻️ 自动选择`url-test`.*`http://www.gstatic.com/generate_204`300,,50
+custom_proxy_group=🇭🇰 HK`url-test`(?i)(🇭🇰|香港|\\bHK\\b|hongkong)`http://www.gstatic.com/generate_204`300,,50
+custom_proxy_group=🇹🇼 TW`url-test`(?i)(🇹🇼|台湾|\\bTW\\b|taiwan|taipei|hinet)`http://www.gstatic.com/generate_204`300,,50
+custom_proxy_group=🇯🇵 JP`url-test`(?i)(🇯🇵|日本|\\bJP\\b|tokyo|osaka)`http://www.gstatic.com/generate_204`300,,50
+custom_proxy_group=🇸🇬 SG`url-test`(?i)(🇸🇬|新加坡|\\bSG\\b|singapore)`http://www.gstatic.com/generate_204`300,,50
+custom_proxy_group=🇺🇸 US`url-test`(?i)(🇺🇸|美国|\\bUS\\b|united states|los angeles|san jose|seattle|new york)`http://www.gstatic.com/generate_204`300,,50
+custom_proxy_group=🧊 冷门节点`select`(?i)^(?!.*(🇭🇰|香港|\\bHK\\b|hong\\s*kong|🇯🇵|日本|\\bJP\\b|tokyo|osaka|🇹🇼|台湾|\\bTW\\b|taiwan|taipei|hinet|🇸🇬|新加坡|\\bSG\\b|singapore|🇺🇸|美国|\\bUS\\b|united\\s*states|los\\s*angeles|san\\s*jose|seattle|new\\s*york)).*
